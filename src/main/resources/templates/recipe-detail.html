@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe Details</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+    <h1 th:text="${recipe.title}">Recipe Title</h1>
+    <nav>
+        <ul>
+            <li><a href="/recipes">Back to Home</a></li>
+        </ul>
+    </nav>
+</header>
+<div class="recipe-detail">
+    <h2 th:text="${recipe.title}">Recipe Title</h2>
+    <p><strong>Category: </strong><span th:text="${recipe.category}"></span></p>
+    <p><strong>Description: </strong><span th:text="${recipe.description}"></span></p>
+
+    <h3>Ingredients: </h3>
+    <p th:text="${recipe.ingredients}"></p>
+
+    <h3>Instructions: </h3>
+    <p th:text="${recipe.instructions}"></p>
+
+    <button id="likeButton" type="button" th:attr="data-recipe-id=${recipe.id}">Like</button>
+    <span id="likeCount" th:text="${recipe.likes}">0</span>
+
+</div>
+
+<!-- JavaScript for Like functionality -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const likeButton = document.getElementById("likeButton");
+    const likeCount = document.getElementById("likeCount");
+
+    likeButton.addEventListener("click", function () {
+        const recipeId = this.getAttribute("data-recipe-id");
+
+        fetch(`/recipes/like/${recipeId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Network response was not ok");
+            return response.json();
+        })
+        .then(data => {
+            // Update the like count in the page with the value from the response
+            likeCount.textContent = data.newLikeCount;
+        })
+        .catch(error => {
+            console.error("Error updating like count:", error);
+        });
+    });
+});
+
+</script>
+</body>
+</html>

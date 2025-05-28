@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe Sharing App</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Recipe Sharing App</h1>
+        <nav>
+            <ul>
+                <li><a th:href="@{/recipes/new}">Add new Recipe</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <form th:action="@{/recipes}" method="get">
+        <input type="text" name="search" placeholder="Search recipes..." />
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="recipe-list">
+        <h2>Recipes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${#lists.isEmpty(recipes)}">
+                    <td colspan="3">No recipes available. Please add a new recipe!</td>
+                </tr>
+                <tr th:each="recipe : ${recipes}">
+                    <td th:text="${recipe.title}">Recipe Title</td>
+                    <td th:text="${recipe.description}">Recipe Description</td>
+                    <td>
+                        <a th:href="@{/recipes/{id}(id=${recipe.id})}">View</a> |
+                        <a th:href="@{/recipes/edit/{id}(id=${recipe.id})}">Edit</a> |
+                        <form th:action="@{/recipes/delete/{id}(id=${recipe.id})}" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
